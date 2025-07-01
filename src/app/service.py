@@ -34,7 +34,7 @@ class GitService:
         """Returns the output of 'git status'."""
         return self.repo.git.status()
 
-    def get_commit_log(self, limit: int) -> List[Commit]:
+    def get_commit_log(self, limit: int) -> List[dict]:
         """
         Retrieves a log of the most recent commits.
         Args:
@@ -51,14 +51,13 @@ class GitService:
             if isinstance(message, bytes):
                 message = message.decode("utf-8", "replace")
 
-            results.append(
-                Commit(
-                    sha=c.hexsha[:7],
-                    author=author_name,
-                    date=c.committed_datetime.isoformat(),
-                    message=message.strip().split("\n")[0],
-                )
+            commit_obj = Commit(
+                sha=c.hexsha[:7],
+                author=author_name,
+                date=c.committed_datetime.isoformat(),
+                message=message.strip().split("\n")[0],
             )
+            results.append(commit_obj.model_dump())
         return results
 
     def show_diff(self, file_path: Optional[str], staged: bool) -> str:

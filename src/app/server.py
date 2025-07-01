@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from fastmcp import FastMCP
 from .schemas import Commit
 from .service import GitService
@@ -7,7 +7,7 @@ from .service import GitService
 git_service: Optional[GitService] = None
 REPO_ERROR: Optional[str] = None
 
-app = FastMCP()
+mcp = FastMCP()
 
 def initialize_git_service(repo_path: str):
     """Initializes the git service with a given repository path."""
@@ -26,21 +26,21 @@ def _raise_if_repo_not_valid():
     if not git_service:
         raise ValueError("Git service is not initialized.")
 
-@app.tool()
+@mcp.tool()
 def list_branches() -> List[str]:
     """Lists all local branches in the git repository."""
     _raise_if_repo_not_valid()
     assert git_service is not None
     return git_service.list_branches()
 
-@app.tool()
+@mcp.tool()
 def get_current_branch() -> str:
     """Gets the name of the current active branch in the git repository."""
     _raise_if_repo_not_valid()
     assert git_service is not None
     return git_service.get_current_branch()
 
-@app.tool()
+@mcp.tool()
 def get_status() -> str:
     """
     Gets the status of the git repository.
@@ -50,8 +50,8 @@ def get_status() -> str:
     assert git_service is not None
     return git_service.get_status()
 
-@app.tool()
-def get_commit_log(limit: int = 10) -> List[Commit]:
+@mcp.tool()
+def get_commit_log(limit: int = 10) -> List[Dict]:
     """
     Retrieves a log of the most recent commits from the repository.
     
@@ -62,7 +62,7 @@ def get_commit_log(limit: int = 10) -> List[Commit]:
     assert git_service is not None
     return git_service.get_commit_log(limit)
 
-@app.tool()
+@mcp.tool()
 def show_diff(file_path: Optional[str] = None, staged: bool = False) -> str:
     """
     Shows the git diff. If no file path is provided, it shows the diff for the entire repository.

@@ -1,7 +1,6 @@
-import uvicorn
 import os
 from dotenv import load_dotenv
-from .server import app, initialize_git_service
+from .server import mcp, initialize_git_service
 
 def main():
     """
@@ -18,7 +17,7 @@ def main():
     port = int(os.getenv("PORT", "8000"))
 
     print(f"Starting MCP server on {host}:{port}")
-    uvicorn.run(app, host=host, port=port)  # type: ignore
+    mcp.run(transport="http",host=host, port=port)  
 
 
 if __name__ == "__main__":
